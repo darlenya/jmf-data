@@ -1,0 +1,69 @@
+'use strict';
+
+import JClass from './JClass';
+import JList from './JList';
+
+/**
+ * <!-- begin-user-doc -->
+ * <!-- end-user-doc -->
+ */
+const instanceName = '__INSTANCE_NAME__';
+
+export default class __INSTANCE_NAME__ extends JClass {
+  constructor(opts) {
+    super(opts);
+
+    // Stores the meta infomation for each property
+    this._property_types = {
+      __PROPERTIES_TYPES__
+    };
+
+    // stores the metainformation for the reference types
+    this._reference_type = {
+      __REFERENCE_TYPES__
+    };
+
+
+    /* ------------------------
+     * normal Properties
+     * ------------------------
+     */
+
+    __PROPERTIES_DEFINITION__
+
+    /* ------------------------
+     * references
+     * ------------------------
+     */
+
+    __REFERENCE_DEFINITION__
+
+  }
+
+  /**
+   * Returns the insatnce name as a static method
+   * @returns {string} The instance name of this calss
+   */
+  static getInstanceName() {
+    return instanceName;
+  }
+
+  /**
+   * Returns the instance name of the object
+   * @returns {string} The instance name of this calss
+   */
+  get instanceName() {
+    return instanceName;
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  set instanceName(name) {
+    throw new Error('The instance name could not be changed');
+  }
+
+  __GETTER_SETTER_ATTRIBUTES__
+
+
+  __GETTER_REFERENCES__
+
+}
