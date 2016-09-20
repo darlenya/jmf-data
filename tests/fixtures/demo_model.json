@@ -25,6 +25,10 @@
 				"annotations": {
 					"graphql": {
 						"reference_type": "connection"
+					},
+					"data": {
+						"containment": true,
+						"unique": true
 					}
 				}
 			}
@@ -62,6 +66,20 @@
 			},
 			"creation_date": {
 				"type": "date"
+			}
+		},
+		"references": {
+			"entitlements": {
+				"target": "entitlement",
+				"annotations": {
+					"graphql": {
+						"reference_type": "connection"
+					},
+					"data": {
+						"containment": false,
+						"unique": true
+					}
+				}
 			}
 		}
 	},

@@ -68,7 +68,7 @@
     "change-case": "^3.0.0",
     "jmf": "^1.0.5",
     "md5": "^2.1.0",
-    "mkdirp": "file:node_modules/mkdirp",
+    "mkdirp": "^0.5.1",
     "pluralize": "^3.0.0"
   }
 }

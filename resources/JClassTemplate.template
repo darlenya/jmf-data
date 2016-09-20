@@ -1,7 +1,7 @@
 'use strict';
 
-import JClass from './JClass';
-import JList from './JList';
+import JClass from 'jmf-data';
+import JList from 'jmf-data';
 
 /**
  * <!-- begin-user-doc -->
@@ -19,23 +19,19 @@ export default class __INSTANCE_NAME__ extends JClass {
     };
 
     // stores the metainformation for the reference types
-    this._reference_type = {
-      __REFERENCE_TYPES__
-    };
+    __REFERENCE_TYPES__
 
 
     /* ------------------------
      * normal Properties
      * ------------------------
      */
-
     __PROPERTIES_DEFINITION__
 
     /* ------------------------
      * references
      * ------------------------
      */
-
     __REFERENCE_DEFINITION__
 
   }
@@ -61,8 +57,18 @@ export default class __INSTANCE_NAME__ extends JClass {
     throw new Error('The instance name could not be changed');
   }
 
+  /* ------------------------
+   * attributes
+   * ------------------------
+   */
+
   __GETTER_SETTER_ATTRIBUTES__
 
+
+  /* ------------------------
+   * references
+   * ------------------------
+   */
 
   __GETTER_REFERENCES__
 

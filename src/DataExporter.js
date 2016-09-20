@@ -110,17 +110,189 @@ export default class DataExporter {
 
 
     content = content.replace(/__PROPERTIES_TYPES__/, this._buildPropertyTypes(model));
-    // content = content.replace(/__REFERENCE_TYPES__/, this._buildRefereceTypes(model));
-    //
-    // content = content.replace(/__PROPERTIES_DEFINITION__/, this._buildPropertyDefinitions(model));
-    // content = content.replace(/__REFERENCE_DEFINITION__/, this._buildRefereceDefinitions(model));
-    //
-    // content = content.replace(/__GETTER_SETTER_ATTRIBUTES__/, this._buildGetterSetterAttributes(model));
-    // content = content.replace(/__GETTER_REFERENCES__/, this._buildGetterReferences(model));
+    content = content.replace(/__REFERENCE_TYPES__/, this._buildRefereceTypes(model));
 
+    content = content.replace(/__PROPERTIES_DEFINITION__/, this._buildPropertyDefinitions(model));
+    content = content.replace(/__REFERENCE_DEFINITION__/, this._buildRefereceDefinitions(model));
+
+    content = content.replace(/__GETTER_SETTER_ATTRIBUTES__/, this._buildGetterSetterAttributes(model));
+    content = content.replace(/__GETTER_REFERENCES__/, this._buildGetterReferences(model));
 
     return content;
   }
+
+  /**
+   * Creates the property Getter and Setter of a class
+   * @protected
+   * @param {object} model - The sub model to be exported. The model of one class
+   * @returns {string} The string used to replace the placeholder in the template
+   */
+  _buildGetterReferences(model) {
+    const attributes = [];
+
+    Object.keys(model.references).forEach(referenceName => {
+
+      const propName = changeCase.camelCase(referenceName);
+
+      // getter
+      attributes.push(`/**`);
+      attributes.push(` * <!-- begin-user-doc -->`);
+      attributes.push(` * <!-- end-user-doc -->`);
+      attributes.push(` * @generated`);
+      attributes.push(` */`);
+      attributes.push(`get ${propName}(){`);
+      attributes.push(`	return this._${referenceName};`);
+      attributes.push(`}`);
+      attributes.push(``);
+
+    });
+
+    return attributes.join(`\n  `);
+  }
+
+
+  /**
+   * Creates the property Getter and Setter of a class
+   * @protected
+   * @param {object} model - The sub model to be exported. The model of one class
+   * @returns {string} The string used to replace the placeholder in the template
+   */
+  _buildGetterSetterAttributes(model) {
+    const attributes = [];
+
+    Object.keys(model.attributes).forEach(attrName => {
+
+      const propName = changeCase.camelCase(attrName);
+
+      // getter
+      attributes.push(`/**`);
+      attributes.push(` * <!-- begin-user-doc -->`);
+      attributes.push(` * <!-- end-user-doc -->`);
+      attributes.push(` * @generated`);
+      attributes.push(` */`);
+      attributes.push(`get ${propName}(){`);
+      attributes.push(`	return this._${attrName};`);
+      attributes.push(`}`);
+      attributes.push(``);
+
+      // setter
+      attributes.push(`/**`);
+      attributes.push(` * <!-- begin-user-doc -->`);
+      attributes.push(` * <!-- end-user-doc -->`);
+      attributes.push(` * @generated`);
+      attributes.push(` */`);
+      attributes.push(`set ${propName}(value){`);
+      attributes.push(`	this._${attrName} = value;`);
+      attributes.push(`}`);
+      attributes.push(``);
+    });
+
+    return attributes.join(`\n  `);
+  }
+
+
+  /**
+   * Creates the reference definitions of a class
+   * @protected
+   * @param {object} model - The sub model to be exported. The model of one class
+   * @returns {string} The string used to replace the placeholder in the template
+   */
+  _buildRefereceDefinitions(model) {
+    const elements = [];
+    Object.keys(model.references).forEach(referenceName => {
+      const containment = model.references[referenceName].annotations[this.annotation].containment;
+      const unique = model.references[referenceName].annotations[this.annotation].unique;
+      const type = this._getClassName(model.references[referenceName].target);
+
+      let description = model.references[referenceName].description;
+      if (description === undefined) {
+        description = 'No description for this reference';
+      }
+
+      const lines = [];
+      lines.push(`// ${description}`);
+      lines.push(`this._${referenceName} = new JList({`);
+      lines.push(`  container     : this,`);
+      lines.push(`  property_name : ${referenceName},`);
+      lines.push(`  unique        : ${unique},`);
+      lines.push(`  containment   : ${containment},`);
+      lines.push(`  model         : this._model,`);
+      lines.push(`  type          : '${type}'`);
+      lines.push(`});`);
+      elements.push(lines.join(`\n    `));
+    });
+
+    if (elements.length > 0) {
+      return elements.join(`\n    `);
+    }
+    return '// No References in this class';
+  }
+
+
+  /**
+   * Creates the property definitions of a class
+   * @protected
+   * @param {object} model - The sub model to be exported. The model of one class
+   * @returns {string} The string used to replace the placeholder in the template
+   */
+  _buildPropertyDefinitions(model) {
+    let maxLength = 0;
+
+    const attributes = [];
+
+    Object.keys(model.attributes).forEach(attrName => {
+      if (attrName.length > maxLength) {
+        maxLength = attrName.length;
+      }
+    });
+
+    Object.keys(model.attributes).forEach(attrName => {
+      let description = model.attributes[attrName].description;
+      if (description === undefined) {
+        description = 'No description for this property';
+      }
+
+      const spaces = SPACE.repeat(maxLength - attrName.length);
+      attributes.push(`// ${description}`);
+      attributes.push(`this._${attrName}${spaces} = undefined;`);
+      attributes.push(``);
+    });
+
+    return attributes.join(`\n    `);
+  }
+
+
+  /**
+   * Creates the reference type definitions of a class
+   * @protected
+   * @param {object} model - The sub model to be exported. The model of one class
+   * @returns {string} The string used to replace the placeholder in the template
+   */
+  _buildRefereceTypes(model) {
+    const elements = [];
+    Object.keys(model.references).forEach(referenceName => {
+      const containment = model.references[referenceName].annotations[this.annotation].containment;
+      const unique = model.references[referenceName].annotations[this.annotation].unique;
+      const upperBound = model.references[referenceName].annotations[this.annotation].upper_bound;
+      const type = this._getClassName(model.references[referenceName].target);
+
+      const lines = [];
+      lines.push(`${referenceName} : {`);
+      lines.push(`  containment : ${containment},`);
+      lines.push(`  unique      : ${unique},`);
+      lines.push(`  upper_bound : ${upperBound},`);
+      lines.push(`  type        : '${type}'`);
+      lines.push(`}`);
+      elements.push(lines.join(`\n      `));
+    });
+    const elemStr = elements.join(`\n      `);
+
+    if (elements.length > 0) {
+      return `this._reference_types = {\n      ${elemStr}\n    };`;
+    }
+    return '// No References in this class';
+  }
+
 
   /**
    * Creates the property type definitions of a class

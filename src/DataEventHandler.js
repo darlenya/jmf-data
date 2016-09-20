@@ -10,6 +10,7 @@ const ID_FIELD_NAME = '__id_unique';
 // Defines the default values for a reference annotation
 const ANNOTATION_REF_DEFAULT = {
   containment: false,
+  unique: false,
   lower_bound: 0,
   upper_bound: -1
 };
