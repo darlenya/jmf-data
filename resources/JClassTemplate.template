@@ -23,7 +23,6 @@ export default class __INSTANCE_NAME__ extends __EXTENDS__ {
     // stores the metainformation for the reference types
     __REFERENCE_TYPES__
 
-
     /* ------------------------
      * normal Properties
      * ------------------------
