@@ -4,7 +4,6 @@ import fs from 'fs';
 
 import mkdirp from 'mkdirp';
 import path from 'path';
-// import pluralize from 'pluralize';
 import changeCase from 'change-case';
 
 const SPACE = ' ';
@@ -33,7 +32,8 @@ export default class DataExporter {
 
 
     if (opts.file_template_class === undefined) {
-      throw new Error('No template file name given');
+      // use the default template file
+      this.file_template_class = path.join(__dirname, '../resources/JClassTemplate.template');
     } else {
       this.file_template_class = opts.file_template_class;
     }
