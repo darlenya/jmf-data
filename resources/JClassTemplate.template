@@ -1,7 +1,11 @@
 'use strict';
 
 import JClass from 'jmf-data';
+
+// eslint-disable-next-line no-unused-vars
 import JList from 'jmf-data';
+
+__IMPORT__
 
 /**
  * <!-- begin-user-doc -->
@@ -9,14 +13,12 @@ import JList from 'jmf-data';
  */
 const instanceName = '__INSTANCE_NAME__';
 
-export default class __INSTANCE_NAME__ extends JClass {
+export default class __INSTANCE_NAME__ extends __EXTENDS__ {
   constructor(opts) {
     super(opts);
 
     // Stores the meta infomation for each property
-    this._property_types = {
-      __PROPERTIES_TYPES__
-    };
+    __PROPERTIES_TYPES__
 
     // stores the metainformation for the reference types
     __REFERENCE_TYPES__

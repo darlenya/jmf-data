@@ -103,5 +103,9 @@
 			"email": "string",
 			"date_of_birth": "date"
 		}
+	},
+
+	"user": {
+		"extends": "identity"
 	}
 }

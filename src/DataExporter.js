@@ -106,8 +106,12 @@ export default class DataExporter {
    */
   _buildFile(model, templateFileContent) {
     let content = templateFileContent;
-    content = content.replace(/__INSTANCE_NAME__/g, this._getClassName(model.name));
 
+    content = content.replace(/__IMPORT__/, this._getExtendsImport(model));
+    content = content.replace(/__EXTENDS__/, this._getExtends(model));
+
+
+    content = content.replace(/__INSTANCE_NAME__/g, this._getClassName(model.name));
 
     content = content.replace(/__PROPERTIES_TYPES__/, this._buildPropertyTypes(model));
     content = content.replace(/__REFERENCE_TYPES__/, this._buildRefereceTypes(model));
@@ -122,6 +126,35 @@ export default class DataExporter {
   }
 
   /**
+   * Creates the import if this class extends an other one
+   * @protected
+   * @param {object} model - The sub model to be exported. The model of one class
+   * @returns {string} The string used to replace the placeholder in the template
+   */
+  _getExtendsImport(model) {
+    if (model.extends === undefined) {
+      return '';
+    }
+
+    const className = this._getClassName(model.extends);
+    return `import ${className} from './${className}';`;
+  }
+
+  /**
+   * returns the class to extend
+   * @protected
+   * @param {object} model - The sub model to be exported. The model of one class
+   * @returns {string} The string used to replace the placeholder in the template
+   */
+  _getExtends(model) {
+    if (model.extends === undefined) {
+      return 'JClass';
+    }
+
+    return this._getClassName(model.extends);
+  }
+
+  /**
    * Creates the property Getter and Setter of a class
    * @protected
    * @param {object} model - The sub model to be exported. The model of one class
@@ -130,8 +163,11 @@ export default class DataExporter {
   _buildGetterReferences(model) {
     const attributes = [];
 
-    Object.keys(model.references).forEach(referenceName => {
+    if (model.references === undefined) {
+      return '';
+    }
 
+    Object.keys(model.references).forEach(referenceName => {
       const propName = changeCase.camelCase(referenceName);
 
       // getter
@@ -144,7 +180,6 @@ export default class DataExporter {
       attributes.push(`	return this._${referenceName};`);
       attributes.push(`}`);
       attributes.push(``);
-
     });
 
     return attributes.join(`\n  `);
@@ -159,6 +194,10 @@ export default class DataExporter {
    */
   _buildGetterSetterAttributes(model) {
     const attributes = [];
+
+    if (model.attributes === undefined) {
+      return '';
+    }
 
     Object.keys(model.attributes).forEach(attrName => {
 
@@ -198,6 +237,10 @@ export default class DataExporter {
    * @returns {string} The string used to replace the placeholder in the template
    */
   _buildRefereceDefinitions(model) {
+    if (model.references === undefined) {
+      return '// No References in this class';
+    }
+
     const elements = [];
     Object.keys(model.references).forEach(referenceName => {
       const containment = model.references[referenceName].annotations[this.annotation].containment;
@@ -213,7 +256,7 @@ export default class DataExporter {
       lines.push(`// ${description}`);
       lines.push(`this._${referenceName} = new JList({`);
       lines.push(`  container     : this,`);
-      lines.push(`  property_name : ${referenceName},`);
+      lines.push(`  property_name : '${referenceName}',`);
       lines.push(`  unique        : ${unique},`);
       lines.push(`  containment   : ${containment},`);
       lines.push(`  model         : this._model,`);
@@ -236,8 +279,11 @@ export default class DataExporter {
    * @returns {string} The string used to replace the placeholder in the template
    */
   _buildPropertyDefinitions(model) {
-    let maxLength = 0;
+    if (model.attributes === undefined) {
+      return '';
+    }
 
+    let maxLength = 0;
     const attributes = [];
 
     Object.keys(model.attributes).forEach(attrName => {
@@ -269,6 +315,10 @@ export default class DataExporter {
    * @returns {string} The string used to replace the placeholder in the template
    */
   _buildRefereceTypes(model) {
+    if (model.references === undefined) {
+      return '// No References in this class';
+    }
+
     const elements = [];
     Object.keys(model.references).forEach(referenceName => {
       const containment = model.references[referenceName].annotations[this.annotation].containment;
@@ -301,6 +351,10 @@ export default class DataExporter {
    * @returns {string} The string used to replace the placeholder in the template
    */
   _buildPropertyTypes(model) {
+    if (model.attributes === undefined) {
+      return '// No Attributes in this class';
+    }
+
     const attributes = [];
     let maxLength = 0;
 
@@ -316,7 +370,13 @@ export default class DataExporter {
       attributes.push(`${attrName} ${spaces}: '${type}'`);
     });
 
-    return attributes.join(`,\n      `);
+    const attributesString = attributes.join(`,\n      `);
+
+    if (attributes.length > 0) {
+      return `this._property_types = {\n      ${attributesString}\n    };`;
+    }
+
+    return '// No Attributes in this class';
   }
 
 

@@ -60,6 +60,31 @@ export default class DataEventHandler extends DefaultEventHandler {
     } else {
       this.model[objectName].description = '';
     }
+
+    if (config.extends !== undefined) {
+      this.model[objectName].extends = config.extends;
+    }
+  }
+
+  /**
+   * Creates the default atributes for an object
+   * @protected
+   * @param {string} objectName - The name of the object to be created
+   * @param {object} config - The complete configuration of this object
+   */
+  createDefaultAttributes(objectName, config) {
+    // add the default attributes
+    Object.keys(this.default_attributes).forEach(attrName => {
+      if (config.attributes !== undefined && config.attributes[attrName] !== undefined) {
+        this.handleError(objectName, 'attribute', attrName, `The object has an attribute '${attrName}' which collides with an default attribute`);
+      } else {
+        if (this.model.attributes === undefined) {
+          this.model.attributes = {};
+        }
+        this.model.attributes[attrName] = this.default_attributes[attrName];
+      }
+
+    });
   }
 
   /**
@@ -164,9 +189,6 @@ export default class DataEventHandler extends DefaultEventHandler {
       // store the reference
       this.model[objectName].references[referenceName] = newRefConfig;
     }
-
-
-
   }
 
   /**
