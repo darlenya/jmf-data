@@ -52,7 +52,7 @@
     "babel-register": "^6.24.1",
     "coveralls": "^2.13.0",
     "cz-conventional-changelog": "^2.0.0",
-    "eslint": "^4.1.0",
+    "eslint": "^4.1.1",
     "eslint-plugin-babel": "^4.0.0",
     "isparta": "^4.0.0",
     "js-beautify": "^1.6.3",
