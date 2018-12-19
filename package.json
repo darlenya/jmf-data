@@ -54,7 +54,7 @@
     "cz-conventional-changelog": "^2.0.0",
     "eslint": "^4.1.0",
     "eslint-plugin-babel": "^4.0.0",
-    "isparta": "^4.0.0",
+    "isparta": "^4.1.1",
     "js-beautify": "^1.7.3",
     "jsdoc": "^3.4.0",
     "mocha": "^4.0.0",
